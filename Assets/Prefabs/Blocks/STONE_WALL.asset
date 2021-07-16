@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd94193cac54f0e47a19eea7c5d1353b, type: 3}
+  m_Name: STONE_WALL
+  m_EditorClassIdentifier: 
+  tile: {fileID: 11400000, guid: c4bc5dbc43f676d4e92c8cc3e69d2a10, type: 2}
+  blockName: STONE_WALL
+  blockGroup: 0
+  interactable: 0

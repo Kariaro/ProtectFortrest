@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd94193cac54f0e47a19eea7c5d1353b, type: 3}
+  m_Name: CHEST
+  m_EditorClassIdentifier: 
+  tile: {fileID: 11400000, guid: 5011be52508f87445b994fa651fbd83e, type: 2}
+  blockName: CHEST
+  defaultState: LEFT
+  blockGroup: 2
+  prefab: {fileID: 1505244138838631152, guid: 86afc7a68f81f9f47b169fc63c3c9d8e, type: 3}
+  interactable: 1
+  hasStates: 1
+  states:
+  - name: LEFT
+    tile: {fileID: 11400000, guid: 5011be52508f87445b994fa651fbd83e, type: 2}
+  - name: DOWN
+    tile: {fileID: 11400000, guid: c78188628956e954292bff9e11016915, type: 2}
+  - name: UP
+    tile: {fileID: 0}
+  - name: RIGHT
+    tile: {fileID: 0}

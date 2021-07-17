@@ -79,7 +79,7 @@ public class ItemDatabaseEditor : Editor {
 		if(item_list == null) {
 			database_list = ((ItemDatabase)target).elements;
 			item_list = BuildTaskReorderableList(database_list, "Database");
-        }
+		}
 
 		serializedObject.Update();
 
@@ -89,7 +89,7 @@ public class ItemDatabaseEditor : Editor {
 		scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
 		if(GUILayout.Button("Import Items")) {
-            database_list.Clear();
+			database_list.Clear();
 
 			foreach(string AssetPath in AssetDatabase.GetAllAssetPaths()) {
 				if(!AssetPath.StartsWith("Assets")) continue;
@@ -99,7 +99,7 @@ public class ItemDatabaseEditor : Editor {
 					database_list.Add(LoadedAsset as ItemObject);
 				}
 			}
-        }
+		}
 
 		item_list.DoLayoutList();
 		GUILayout.EndScrollView();

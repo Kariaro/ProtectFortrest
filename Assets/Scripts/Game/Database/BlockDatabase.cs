@@ -10,19 +10,19 @@ using UnityEngine.Tilemaps;
 
 
 namespace ProjectFortrest.Game.Database {
-    [CreateAssetMenu(fileName = "BlockDatabase", menuName = "Database/BlockDatabase", order = 1)]
-    public class BlockDatabase : ScriptableObject {
-        public List<BlockObject> elements;
-    }
+	[CreateAssetMenu(fileName = "BlockDatabase", menuName = "Database/BlockDatabase", order = 1)]
+	public class BlockDatabase : ScriptableObject {
+		public List<BlockObject> elements;
+	}
 
-    public static class BlockDatabaseExtension {
-        public static BlockObject GetFromName(this BlockDatabase database, string name) {
-            foreach(BlockObject block in database.elements) {
-                if(block.name.Equals(name))
-                    return block;
-            }
+	public static class BlockDatabaseExtension {
+		public static BlockObject GetFromName(this BlockDatabase database, string name) {
+			foreach(BlockObject block in database.elements) {
+				if(block.name.Equals(name))
+					return block;
+			}
 
-            return null;
-        }
-    }
+			return null;
+		}
+	}
 }

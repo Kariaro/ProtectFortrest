@@ -9,21 +9,21 @@ using UnityEngine.Tilemaps;
 
 
 namespace ProjectFortrest.Game.Level {
-    [CreateAssetMenu(fileName = "Item", menuName = "Items/Item", order = 1)]
-    public class ItemObject : ScriptableObject {
-        public Sprite sprite;
-        public string itemName;
-        public string defaultState;
-        public IItemGroup itemGroup;
-        public GameObject prefab;
-        public bool interactable;
-        public bool hasStates;
-        public ItemState[] states;
-    }
+	[CreateAssetMenu(fileName = "Item", menuName = "Items/Item", order = 1)]
+	public class ItemObject : ScriptableObject {
+		public Sprite sprite;
+		public string itemName;
+		public string defaultState;
+		public IItemGroup itemGroup;
+		public GameObject prefab;
+		public bool interactable;
+		public bool hasStates;
+		public ItemState[] states;
+	}
 
-    [Serializable]
-    public class ItemState {
-        public string name;
-        public Sprite sprite;
-    }
+	[Serializable]
+	public class ItemState {
+		public string name;
+		public Sprite sprite;
+	}
 }

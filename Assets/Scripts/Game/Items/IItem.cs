@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 namespace ProjectFortrest.Game.Blocks {
-    public interface IItem : IDataHolder {
-        ItemObject Item { get; }
-        int MaxStack { get; }
+	public interface IItem : IDataHolder {
+		ItemObject Item { get; }
+		int MaxStack { get; }
 
-        void Tick();
-    }
+		void Tick();
+	}
 
-    public enum IItemGroup {
-        Default
-    }
+	public enum IItemGroup {
+		Default
+	}
 }

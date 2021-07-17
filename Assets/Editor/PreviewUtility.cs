@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class PreviewUtility {
-    public static Texture2D GetTilePreview(TileBase tile) {
+	public static Texture2D GetTilePreview(TileBase tile) {
 		if(tile == null) return Texture2D.whiteTexture;
 
 		Sprite sprite = GetTileSprite(tile);
@@ -18,22 +18,22 @@ public class PreviewUtility {
 		if(texture != null) {
 			texture.filterMode = FilterMode.Point;
 			return texture;
-        }
+		}
 
 		return Texture2D.whiteTexture;
-    }
+	}
 
 	private static Sprite GetTileSprite(TileBase tile) {
 		if(tile is Tile tile_tile) {
 			return tile_tile.sprite;
-        } else if(tile is RuleTile ruleTile_tile) {
+		} else if(tile is RuleTile ruleTile_tile) {
 			return ruleTile_tile.m_DefaultSprite;
-        } else {
+		} else {
 			Debug.Log("Unknown tile type: " + tile.GetType());
-        }
+		}
 
 		return null;
-    }
+	}
 
 	public static Texture2D GetSpritePreview(Sprite sprite) {
 		if(sprite == null) return Texture2D.whiteTexture;
@@ -42,8 +42,8 @@ public class PreviewUtility {
 		if(texture != null) {
 			texture.filterMode = FilterMode.Point;
 			return texture;
-        }
+		}
 
 		return Texture2D.whiteTexture;
-    }
+	}
 }

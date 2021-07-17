@@ -79,7 +79,7 @@ public class BlockDatabaseEditor : Editor {
 		if(block_list == null) {
 			database_list = ((BlockDatabase)target).elements;
 			block_list = BuildTaskReorderableList(database_list, "Database");
-        }
+		}
 
 		serializedObject.Update();
 
@@ -89,7 +89,7 @@ public class BlockDatabaseEditor : Editor {
 		scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
 		if(GUILayout.Button("Import Blocks")) {
-            database_list.Clear();
+			database_list.Clear();
 
 			foreach(string AssetPath in AssetDatabase.GetAllAssetPaths()) {
 				if(!AssetPath.StartsWith("Assets")) continue;
@@ -99,7 +99,7 @@ public class BlockDatabaseEditor : Editor {
 					database_list.Add(LoadedAsset as BlockObject);
 				}
 			}
-        }
+		}
 
 		block_list.DoLayoutList();
 		GUILayout.EndScrollView();

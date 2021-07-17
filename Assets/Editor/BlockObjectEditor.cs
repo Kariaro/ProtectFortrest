@@ -76,9 +76,9 @@ public class BlockObjectEditor : Editor {
 				string value = states_prop.GetArrayElementAtIndex(i).FindPropertyRelative("name").stringValue;
 				if(value == defaultState_value) {
 					defaultState_currentIndex = i;
-                }
+				}
 				defaultState_values[i] = value;
-            }
+			}
 			
 			Rect defaultState_rect = GUILayoutUtility.GetRect(64, EditorGUIUtility.singleLineHeight);
 			if(defaultState_values.Length == 0) {
@@ -88,14 +88,14 @@ public class BlockObjectEditor : Editor {
 			} else {
 				int defaultState_index = EditorGUI.Popup(defaultState_rect, "Default State", defaultState_currentIndex, defaultState_values);
 				defaultState_prop.stringValue = defaultState_values[defaultState_index];
-            }
+			}
 			
 			GUILayout.Space(4);
 
 			states_list.DoLayoutList();
 
 			GUILayout.EndVertical();
-        }
+		}
 		EditorGUI.EndDisabledGroup();
 
 		GUILayout.EndVertical();
@@ -132,7 +132,7 @@ public class BlockObjectEditor : Editor {
 				SerializedProperty prop = property.GetArrayElementAtIndex(index);
 				SerializedProperty name_prop = prop.FindPropertyRelative("name");
 				name_prop.stringValue = EnsureUniqueName("State", index, property);
-            }
+			}
 		};
 	}
 
@@ -147,9 +147,9 @@ public class BlockObjectEditor : Editor {
 				modified = newName + "_" + (collisions++);
 				i = 0;
 				continue;
-            }
-        }
+			}
+		}
 
 		return modified;
-    }
+	}
 }

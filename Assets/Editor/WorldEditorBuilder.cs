@@ -91,7 +91,7 @@ public class WorldEditorBuilder : EditorWindow {
 		Draw,
 		Erase,
 		Fill
-    }
+	}
 
 	private TileLevel tileLevel;
 	private IBlockGroup tileLayer;
@@ -107,7 +107,7 @@ public class WorldEditorBuilder : EditorWindow {
 
 		if(tileLevel == null) {
 			tileLevel = GameObject.Find("Level(0)")?.GetComponent<TileLevel>();
-        }
+		}
 
 		float old_labelWidth = EditorGUIUtility.labelWidth;
 		EditorGUIUtility.labelWidth = 130;
@@ -144,7 +144,7 @@ public class WorldEditorBuilder : EditorWindow {
 				drawTool = IDrawTool.Fill;
 
 			}
-        }
+		}
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginVertical(GUI.skin.box);
@@ -157,9 +157,9 @@ public class WorldEditorBuilder : EditorWindow {
 			rect.width = Screen.width - rect.x;
 			rect.height = Screen.height - rect.y;
 			GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill, false, 1, new Color(0, 0, 0, 0.6f), 0, 0);
-        } else {
+		} else {
 			DrawBlockPicker();
-        }
+		}
 		EditorGUI.EndDisabledGroup();
 
 		GUILayout.EndScrollView();
@@ -180,7 +180,7 @@ public class WorldEditorBuilder : EditorWindow {
 			if(GUI.Button(color_rect, "", GUI.skin.box)) {
 				blockIndex = index;
 				tileLayer = block.blockGroup;
-            }
+			}
 
 			Rect label_rect = new Rect(rect.x + 68, rect.y, 60, 32);
 			GUI.Label(label_rect, "Name:\nGroup:");
@@ -198,16 +198,16 @@ public class WorldEditorBuilder : EditorWindow {
 
 			if(index == blockIndex) {
 				EditorGUI.DrawRect(color_rect, Color.white);
-            } else {
+			} else {
 				EditorGUI.DrawRect(color_rect, Color.black);
-            }
+			}
 			
 			Rect image_rect = new Rect(rect.x + 2, rect.y + 2, 64, 64);
 			EditorGUI.DrawTextureTransparent(image_rect, texture);
 
 			index++;
-        }
-    }
+		}
+	}
 	
 	void OnSceneGUI(SceneView sceneView) {
 		if(tileLevel == null) return;
@@ -248,13 +248,13 @@ public class WorldEditorBuilder : EditorWindow {
 						BlockObject block = BlockDatabase.elements[blockIndex];
 						if((evt.modifiers & EventModifiers.Shift) == 0) {
 							tileLevel.SetBlock(mx, my, block);
-                        } else {
+						} else {
 							tileLevel.RemoveBlock(mx, my, (int)block.blockGroup);
-                        }
+						}
 						evt.Use();
 					}
 					break;
-                }
+				}
 				case IDrawTool.Erase: {
 					if((evt.type == EventType.MouseDown
 					|| evt.type == EventType.MouseDrag)
@@ -263,12 +263,12 @@ public class WorldEditorBuilder : EditorWindow {
 						evt.Use();
 					}
 					break;
-                }
-            }
+				}
+			}
 			
 
 			SceneView.RepaintAll();
-        }
+		}
 	}
 
 	void OnFocus() {

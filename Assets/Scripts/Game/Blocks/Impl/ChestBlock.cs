@@ -10,25 +10,25 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 namespace ProjectFortrest.Game.Blocks.Impl {
-    public class ChestBlock : Block {
-        public override BlockObject Tile => BlockManager.GetBlock("CHEST");
+	public class ChestBlock : Block {
+	public override BlockObject Tile => BlockManager.GetBlock("CHEST");
 
-        public List<IItem> Inventory;
+		public List<IItem> Inventory;
 
-        public override void Deserialize(BinaryReader reader) {
-            base.Deserialize(reader);
-        }
+		public override void Deserialize(BinaryReader reader) {
+			
+		}
 
-        public override void Serialize(BinaryWriter writer) {
-            base.Serialize(writer);
-        }
+		public override void Serialize(BinaryWriter writer) {
+			
+		}
 
-        public override void OnBlockStart() {
-            
-        }
-        
-        public override void Tick() {
-            
-        }
-    }
+		public override void OnBlockStart() {
+			
+		}
+		
+		public override void Tick() {
+			
+		}
+	}
 }

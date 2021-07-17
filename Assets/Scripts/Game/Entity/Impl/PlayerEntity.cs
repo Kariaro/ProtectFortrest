@@ -8,18 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectFortrest.Game.Entity.Impl {
-    public class PlayerEntity : Entity {
-        
-        public override void Deserialize(BinaryReader reader) {
-            base.Deserialize(reader);
-        }
+	public class PlayerEntity : Entity {
+		
+		public override void Deserialize(BinaryReader reader) {
+			base.Deserialize(reader);
+		}
 
-        public override void Serialize(BinaryWriter writer) {
-            base.Serialize(writer);
-        }
+		public override void Serialize(BinaryWriter writer) {
+			base.Serialize(writer);
+		}
 
-        public override void Tick() {
-            
-        }
-    }
+		public override void Tick() {
+			
+		}
+	}
 }

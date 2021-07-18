@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace ProjectFortrest.Game.Blocks {
+namespace ProjectFortrest.Game.Items {
 	public class ItemContainer : IDataHolder {
 		public IItem[] items;
 

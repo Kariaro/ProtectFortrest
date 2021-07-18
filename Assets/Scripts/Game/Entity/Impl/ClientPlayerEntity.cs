@@ -10,16 +10,22 @@ namespace ProjectFortrest.Game.Entity.Impl {
 		
 		// This is the MouseSelectionBox
 		public GameObject mouseBox;
-		public SpriteRenderer MouseBoxRenderer;
+		[HideInInspector] public SpriteRenderer MouseBoxRenderer;
 
 		// This is the PlayerLocationBox
 		public GameObject locationBox;
-		public SpriteRenderer LocationBoxRenderer;
+		[HideInInspector] public SpriteRenderer LocationBoxRenderer;
+
+		public SpriteRenderer rend;
+		public Sprite sprite_x;
+		public Sprite sprite_up;
+		public Sprite sprite_down;
 
 
 		public override void OnStart() {
 			MouseBoxRenderer = mouseBox.GetComponent<SpriteRenderer>();
 			LocationBoxRenderer = locationBox.GetComponent<SpriteRenderer>();
+			rend = GetComponent<SpriteRenderer>();
 		}
 
 		public new void SetLayer(int layer) {
@@ -78,18 +84,33 @@ namespace ProjectFortrest.Game.Entity.Impl {
 			}
 		}
 
-		public Vector3 CameraPosition;
 		public override void AfterTick() {
 			Camera current = Camera.main;
 			Vector3 camPos = current.transform.position;
 			Vector2 newPos = ((Vector2)camPos + Position) / 2.0f;
 
 			current.transform.position = new Vector3(newPos.x, newPos.y, camPos.z);
+			/*{
+				float ppx = Mathf.FloorToInt(newPos.x * 16) / 16.0f + 0.0001f;
+				float ppy = Mathf.FloorToInt(newPos.y * 16) / 16.0f + 0.0001f;
+				current.transform.position = new Vector3(ppx, ppy, camPos.z);
+			}*/
 
 			int px = Mathf.FloorToInt(Position.x);
-			int py = Mathf.FloorToInt(Position.y);
+			int py = Mathf.FloorToInt(Position.y - 0.25f);
 			locationBox.transform.position = new Vector3(px + 0.5f, py + 0.5f, -Layer);
 
+			if(Velocity.sqrMagnitude > 0) {
+				if(Velocity.x > 0 && !rend.flipX) rend.flipX = true;
+				if(Velocity.x < 0 && rend.flipX) rend.flipX = false;
+				if(Mathf.Abs(Velocity.x) > Mathf.Abs(Velocity.y)) {
+					rend.sprite = sprite_x;
+				} else {
+					if(Velocity.y > 0) rend.sprite = sprite_up;
+					if(Velocity.y < 0) rend.sprite = sprite_down;
+				}
+			}
+			
 			{
 				Ray ray = current.ScreenPointToRay(Input.mousePosition);
 				Vector3 rayPos = ray.origin;
@@ -102,9 +123,9 @@ namespace ProjectFortrest.Game.Entity.Impl {
 				if(Input.GetMouseButton(0)) {
 					//Debug.Log(level.GetFloor(mx, my));
 					//level.SetWall(mx, my, GameManager.Instance.BlockManager.WOOD_WALL);
-					level.SetBlock(mx, my, GameManager.Instance.BlockManager.CHEST);
+					//level.SetBlock(mx, my, GameManager.Instance.BlockManager.CHEST);
 				} else if(Input.GetMouseButton(1)) {
-					level.RemoveBlock(mx, my, 2);
+					//level.RemoveBlock(mx, my, 2);
 				}
 
 				{

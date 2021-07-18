@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd94193cac54f0e47a19eea7c5d1353b, type: 3}
   m_Name: LADDER
   m_EditorClassIdentifier: 
-  tile: {fileID: 11400000, guid: 625a34183421a3748b954401d0710f26, type: 2}
   blockName: LADDER
   blockGroup: 2
+  prefab: {fileID: 5905615045280290376, guid: add5a61607ffbdf48a57476348b107f7, type: 3}
   interactable: 1
+  hasStates: 1
+  states:
+  - tile: {fileID: 11400000, guid: 625a34183421a3748b954401d0710f26, type: 2}
+    name: UP
+  - tile: {fileID: 11400000, guid: 07b1d4f3cc91b994fbd53afc39511acd, type: 2}
+    name: DOWN

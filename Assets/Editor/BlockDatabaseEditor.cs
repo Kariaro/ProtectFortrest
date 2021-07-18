@@ -25,6 +25,7 @@ public class BlockDatabaseEditor : Editor {
 			},
 			drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
 				BlockObject value = database[index];
+				if(value == null) return;
 
 				float labelWidth_old = EditorGUIUtility.labelWidth;
 				EditorGUIUtility.labelWidth = 100;
@@ -40,9 +41,11 @@ public class BlockDatabaseEditor : Editor {
 				value.blockName = EditorGUI.TextField(id_rect, new GUIContent("Name"), value.blockName);
 				rect.y += 16;
 
+				/*
 				Rect object_rect = new Rect(rect) { height = 16 };
 				value.tile = (TileBase)EditorGUI.ObjectField(object_rect, new GUIContent("Tile"), value.tile, typeof(TileBase), false);
 				rect.y += 16;
+				*/
 
 				Rect group_rect = new Rect(rect) { height = 16 };
 				value.blockGroup = (IBlockGroup)EditorGUI.EnumPopup(group_rect, new GUIContent("Group"), value.blockGroup);
@@ -61,9 +64,6 @@ public class BlockDatabaseEditor : Editor {
 			},
 			drawNoneElementCallback = (Rect rect) => {
 				EditorGUI.LabelField(rect, "Empty", EditorStyles.centeredGreyMiniLabel);
-			},
-			onSelectCallback = (ReorderableList a) => {
-
 			},
 			onAddCallback = (ReorderableList a) => {
 				database.Add(BlockObject.CreateInstance<BlockObject>());

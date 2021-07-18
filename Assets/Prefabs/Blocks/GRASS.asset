@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd94193cac54f0e47a19eea7c5d1353b, type: 3}
   m_Name: GRASS
   m_EditorClassIdentifier: 
-  tile: {fileID: 11400000, guid: 20e0e2cf3f988e04486329fb1d85e414, type: 2}
   blockName: GRASS
-  defaultState: 
   blockGroup: 0
-  customScript: 
+  prefab: {fileID: 0}
   interactable: 0
   hasStates: 0
-  states: []
+  states:
+  - tile: {fileID: 11400000, guid: 20e0e2cf3f988e04486329fb1d85e414, type: 2}
+    name: 

@@ -11,9 +11,9 @@ using UnityEngine;
 namespace ProjectFortrest.Game.Blocks {
 	public interface IBlock : IDataHolder {
 		/// <summary>
-		/// The tile object of this block
+		/// The block data object
 		/// </summary>
-		BlockObject Tile { get; }
+		BlockObject Data { get; }
 
 		/// <summary>
 		/// The current state of this block

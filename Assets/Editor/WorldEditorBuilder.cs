@@ -1,16 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Linq;
-using UnityEditorInternal;
 using System;
 using ProjectFortrest.Game.Level;
 using ProjectFortrest.Game.Database;
-using UnityEngine.Tilemaps;
-using UnityEngine.Rendering;
 using ProjectFortrest.Game.Blocks;
 
 public class WorldEditorBuilder : EditorWindow {
@@ -19,47 +14,6 @@ public class WorldEditorBuilder : EditorWindow {
 	public static void ShowWindow() {
 		EditorWindow.GetWindow(typeof(WorldEditorBuilder));
 	}
-	
-	private ReorderableList BuildTaskReorderableList_Location(List<BlockObject> database, string name) {
-		return new ReorderableList(database, typeof(BlockObject), true, true, false, false) {
-			drawHeaderCallback = (Rect rect) => {
-				EditorGUI.LabelField(rect, name);
-			},
-			drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
-				BlockObject value = database[index];
-
-				EditorGUIUtility.labelWidth = 100;
-				Rect id_rect = new Rect(rect) { height = 16 };
-				value.blockName = EditorGUI.TextField(id_rect, new GUIContent("Name"), value.blockName);
-				rect.y += 16;
-
-				Rect button_rect = new Rect(rect) { height = 18, width = 140 };
-				rect.y += 16;
-				if(GUI.Button(button_rect, "Open in Inspector")) {
-					Selection.activeObject = value;
-				}
-			},
-			elementHeightCallback = (int index) => {
-				return 16*4 + 16;
-			},
-			drawNoneElementCallback = (Rect rect) => {
-				EditorGUI.LabelField(rect, "Add a world entity", EditorStyles.centeredGreyMiniLabel);
-			},
-			onSelectCallback = (ReorderableList a) => {
-
-			},
-			onAddCallback = (ReorderableList a) => {
-				// Add new element
-
-				BlockObject new_object = BlockObject.CreateInstance<BlockObject>();
-				database.Add(new_object);
-			},
-		};
-	}
-
-	private ReorderableList block_list;
-	private Vector2 scrollPosition = Vector2.zero;
-	private List<BlockObject> database_list;
 	
 	private BlockDatabase _blockDatabase;
 	private BlockDatabase BlockDatabase {
@@ -98,6 +52,8 @@ public class WorldEditorBuilder : EditorWindow {
 	private IDrawTool drawTool;
 	private int blockIndex;
 	private bool drawEnabled;
+	private Vector2 scrollPosition = Vector2.zero;
+	private Dictionary<string, int> stateIndexes = new Dictionary<string, int>();
 
 	void OnGUI() {
 		/* Display the current scene */ {
@@ -170,10 +126,17 @@ public class WorldEditorBuilder : EditorWindow {
 
 	void DrawBlockPicker() {
 		int index = 0;
+		
+		for(int i = 0, len = BlockDatabase.elements.Count; i < len; i++) {
+			BlockObject block = BlockDatabase.elements[i];
+			if(block == null) {
+				BlockDatabase.elements.RemoveAt(i);
+				i -= 1;
+				len -= 1;
+			}
+		}
+		
 		foreach(BlockObject block in BlockDatabase.elements) {
-			Texture2D texture = PreviewUtility.GetTilePreview(block.tile);
-			texture.filterMode = FilterMode.Point;
-			
 			Rect rect = GUILayoutUtility.GetRect(64 + 4, 64 + 4 + 8);
 			
 			Rect color_rect = new Rect(rect.x, rect.y, 64 + 4, 64 + 4);
@@ -186,15 +149,26 @@ public class WorldEditorBuilder : EditorWindow {
 			GUI.Label(label_rect, "Name:\nGroup:");
 
 			Rect text_rect = new Rect(rect.x + 68 + 60, rect.y, rect.width, 32);
-			GUI.Label(text_rect, block.blockName + "\n" + block.blockGroup);
+			GUI.Label(text_rect, $"{block.blockName}\n{block.blockGroup}");
+			
+			Texture2D texture;
+			if(block.HasStates()) {
+				int state_index = 0;
+				if(stateIndexes.TryGetValue(block.blockName, out int _stateIndex)) {
+					state_index = _stateIndex;
+				}
 
-			if(block.hasStates) {
 				Rect stateLabel_rect = new Rect(rect.x + 68, rect.y + 32, 60, 16);
 				GUI.Label(stateLabel_rect, "State:");
 
 				Rect state_rect = new Rect(rect.x + 68 + 60, rect.y + 32, rect.width, 16);
-				int state_index = EditorGUI.Popup(state_rect, 0, block.GetStateNames());
+				state_index = EditorGUI.Popup(state_rect, state_index, block.GetStateNames());
+				stateIndexes[block.blockName] = state_index;
+				texture = PreviewUtility.GetTilePreview(block.states[state_index].tile);
+			} else {
+				texture = PreviewUtility.GetTilePreview(block.states[0].tile);
 			}
+			texture.filterMode = FilterMode.Point;
 
 			if(index == blockIndex) {
 				EditorGUI.DrawRect(color_rect, Color.white);
@@ -207,6 +181,16 @@ public class WorldEditorBuilder : EditorWindow {
 
 			index++;
 		}
+	}
+
+	private Texture GetTestPreview() {
+		BlockObject block = BlockDatabase.elements[blockIndex];
+		int stateIndex = 0;
+		if(stateIndexes.TryGetValue(block.blockName, out int _stateIndex)) {
+			stateIndex = _stateIndex;
+		}
+
+		return PreviewUtility.GetTilePreview(block.GetState(stateIndex).tile);
 	}
 	
 	void OnSceneGUI(SceneView sceneView) {
@@ -235,9 +219,17 @@ public class WorldEditorBuilder : EditorWindow {
 			int my = Mathf.FloorToInt(mousePosition.y);
 			Rect selectionBox = new Rect(mx, my, 1, 1);
 
+			{
+				Handles.BeginGUI();
+
+				Vector3 a = sceneView.camera.WorldToScreenPoint(new Vector2(mx, my + 1));
+				Vector3 b = sceneView.camera.WorldToScreenPoint(new Vector2(mx + 1, my + 2));
+				GUI.DrawTexture(new Rect(a.x, sceneView.camera.pixelHeight - a.y, b.x - a.x, (b.y - a.y)), GetTestPreview());
+				Handles.EndGUI();
+			}
 			Handles.color = Color.black;
 			Handles.DrawSolidRectangleWithOutline(selectionBox, new Color(0, 0, 0, 0.5f), Color.black);
-			
+
 			switch(drawTool) {
 				case IDrawTool.Draw: {
 					if((evt.type == EventType.MouseDown
@@ -246,8 +238,13 @@ public class WorldEditorBuilder : EditorWindow {
 						// Place block at position
 						
 						BlockObject block = BlockDatabase.elements[blockIndex];
+						int stateIndex = 0;
+						if(stateIndexes.TryGetValue(block.blockName, out int _stateIndex)) {
+							stateIndex = _stateIndex;
+						}
+
 						if((evt.modifiers & EventModifiers.Shift) == 0) {
-							tileLevel.SetBlock(mx, my, block);
+							tileLevel.PutBlock(mx, my, block, stateIndex);
 						} else {
 							tileLevel.RemoveBlock(mx, my, (int)block.blockGroup);
 						}

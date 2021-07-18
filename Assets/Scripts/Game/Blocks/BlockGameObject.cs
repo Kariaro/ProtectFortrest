@@ -27,6 +27,10 @@ namespace ProjectFortrest.Game.Blocks {
 			_block.Initialize((Vector2Int)position, state);
 		}
 
+		public void UpdateState(string state) {
+			_level.UpdateState(_position, _block.Data, state);
+		}
+
 		// Called when removed from the tilemap
 		public void Remove() {
 			#if UNITY_EDITOR

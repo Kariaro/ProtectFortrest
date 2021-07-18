@@ -1,16 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using System.Linq;
 using UnityEditorInternal;
-using System;
-using UnityEngine.Tilemaps;
 using ProjectFortrest.Game.Database;
 using ProjectFortrest.Game.Level;
-using ProjectFortrest.Game.Blocks;
+using ProjectFortrest.Game.Items;
 
 [CustomEditor(typeof(ItemDatabase), true, isFallback = true)]
 public class ItemDatabaseEditor : Editor {
@@ -32,7 +26,7 @@ public class ItemDatabaseEditor : Editor {
 				Rect color_rect = new Rect(rect) { width = 68, height = 68 };
 				EditorGUI.DrawRect(color_rect, Color.black);
 				Rect image_rect = new Rect(rect) { x = rect.x + 2, y = rect.y + 2, width = 64, height = 64 };
-				EditorGUI.DrawTextureTransparent(image_rect, PreviewUtility.GetSpritePreview(value.sprite));
+				EditorGUI.DrawTextureTransparent(image_rect, PreviewUtility.GetSpritePreview(value.states[0].sprite));
 				rect.x += 70;
 				rect.width -= 70;
 
@@ -41,7 +35,7 @@ public class ItemDatabaseEditor : Editor {
 				rect.y += 16;
 
 				Rect object_rect = new Rect(rect) { height = 16 };
-				value.sprite = (Sprite)EditorGUI.ObjectField(object_rect, new GUIContent("Sprite"), value.sprite, typeof(Sprite), false);
+				value.states[0].sprite = (Sprite)EditorGUI.ObjectField(object_rect, new GUIContent("Sprite"), value.states[0].sprite, typeof(Sprite), false);
 				rect.y += 16;
 
 				Rect group_rect = new Rect(rect) { height = 16 };
@@ -53,7 +47,6 @@ public class ItemDatabaseEditor : Editor {
 				if(GUI.Button(button_rect, "Open in Inspector")) {
 					Selection.activeObject = value;
 				}
-
 				EditorGUIUtility.labelWidth = labelWidth_old;
 			},
 			elementHeightCallback = (int index) => {
@@ -61,9 +54,6 @@ public class ItemDatabaseEditor : Editor {
 			},
 			drawNoneElementCallback = (Rect rect) => {
 				EditorGUI.LabelField(rect, "Empty", EditorStyles.centeredGreyMiniLabel);
-			},
-			onSelectCallback = (ReorderableList a) => {
-
 			},
 			onAddCallback = (ReorderableList a) => {
 				database.Add(ItemObject.CreateInstance<ItemObject>());
@@ -103,7 +93,6 @@ public class ItemDatabaseEditor : Editor {
 
 		item_list.DoLayoutList();
 		GUILayout.EndScrollView();
-
 		GUILayout.EndHorizontal();
 
 		serializedObject.ApplyModifiedProperties();

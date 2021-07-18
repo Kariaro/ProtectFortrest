@@ -12,21 +12,27 @@ using ProjectFortrest.Game.Blocks.Impl;
 [CustomEditor(typeof(BlockObject), true, isFallback = true)]
 public class BlockObjectEditor : Editor {
 	protected virtual void OnEnable() {
-		states_list = BuildReorderableList(serializedObject.FindProperty("states"), typeof(BlockState), "State List");
+		states_list = BuildReorderableList(serializedObject.FindProperty("states"), "State List");
 	}
 
 	private ReorderableList states_list;
 	public override void OnInspectorGUI() {
 		serializedObject.Update();
-		//EditorGUILayout.LabelField("This object should be loaded from a data scene containing all the prefabs that are available.", EditorStyles.miniLabel);
 		
-		SerializedProperty tile_prop = serializedObject.FindProperty("tile");
 		SerializedProperty prefab_prop = serializedObject.FindProperty("prefab");
 		SerializedProperty blockName_prop = serializedObject.FindProperty("blockName");
 		SerializedProperty blockGroup_prop = serializedObject.FindProperty("blockGroup");
 		SerializedProperty interactable_prop = serializedObject.FindProperty("interactable");
 		SerializedProperty hasStates_prop = serializedObject.FindProperty("hasStates");
+		SerializedProperty states_prop = serializedObject.FindProperty("states");
 		
+		{
+			// Ensure that we always have atleast one state
+			if(states_prop.arraySize < 1) {
+				states_prop.arraySize++;
+			}
+		}
+
 		int old = EditorGUI.indentLevel;
 		EditorGUI.indentLevel = 0;
 		
@@ -43,7 +49,11 @@ public class BlockObjectEditor : Editor {
 
 		EditorGUI.BeginDisabledGroup(hasStates_prop.boolValue);
 		Rect tile_rect = GUILayoutUtility.GetRect(64, EditorGUIUtility.singleLineHeight);
-		EditorGUI.ObjectField(tile_rect, tile_prop, new GUIContent("Tile"));
+		{
+			SerializedProperty prop = states_prop.GetArrayElementAtIndex(0);
+			SerializedProperty sprite_prop = prop.FindPropertyRelative("tile");
+			EditorGUI.ObjectField(tile_rect, sprite_prop, new GUIContent("Tile"));
+		}
 		EditorGUI.EndDisabledGroup();
 		GUILayout.Space(1);
 
@@ -61,41 +71,9 @@ public class BlockObjectEditor : Editor {
 		GUILayout.Space(1);
 
 		EditorGUI.BeginDisabledGroup(!hasStates_prop.boolValue);
-		if(true) {
-			SerializedProperty defaultState_prop = serializedObject.FindProperty("defaultState");
-			SerializedProperty states_prop = serializedObject.FindProperty("states");
-
-			// If has states draw states
-			GUILayout.BeginVertical(GUI.skin.box);
-
-			string defaultState_value = defaultState_prop.stringValue;
-			int defaultState_currentIndex = 0;
-
-			string[] defaultState_values = new string[states_prop.arraySize];
-			for(int i = 0; i < states_prop.arraySize; i++) {
-				string value = states_prop.GetArrayElementAtIndex(i).FindPropertyRelative("name").stringValue;
-				if(value == defaultState_value) {
-					defaultState_currentIndex = i;
-				}
-				defaultState_values[i] = value;
-			}
-			
-			Rect defaultState_rect = GUILayoutUtility.GetRect(64, EditorGUIUtility.singleLineHeight);
-			if(defaultState_values.Length == 0) {
-				EditorGUI.BeginDisabledGroup(true);
-				EditorGUI.Popup(defaultState_rect, "Default State", defaultState_currentIndex, defaultState_values);
-				EditorGUI.EndDisabledGroup();
-			} else {
-				int defaultState_index = EditorGUI.Popup(defaultState_rect, "Default State", defaultState_currentIndex, defaultState_values);
-				defaultState_prop.stringValue = defaultState_values[defaultState_index];
-			}
-			
-			GUILayout.Space(4);
-
-			states_list.DoLayoutList();
-
-			GUILayout.EndVertical();
-		}
+		GUILayout.BeginVertical(GUI.skin.box);
+		states_list.DoLayoutList();
+		GUILayout.EndVertical();
 		EditorGUI.EndDisabledGroup();
 
 		GUILayout.EndVertical();
@@ -104,7 +82,7 @@ public class BlockObjectEditor : Editor {
 		serializedObject.ApplyModifiedProperties();
 	}
 
-	private ReorderableList BuildReorderableList(SerializedProperty property, Type objectType, string list_name) {
+	private ReorderableList BuildReorderableList(SerializedProperty property, string list_name) {
 		return new ReorderableList(property.serializedObject, property, true, true, true, true) {
 			drawHeaderCallback = (Rect rect) => {
 				EditorGUI.LabelField(rect, list_name);

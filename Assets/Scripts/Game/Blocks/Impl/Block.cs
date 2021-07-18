@@ -11,10 +11,20 @@ using UnityEngine;
 namespace ProjectFortrest.Game.Blocks.Impl {
 	[RequireComponent(typeof(BlockGameObject))]
 	public class Block : MonoBehaviour, IBlock {
-		public virtual BlockObject Tile { get; }
+		public virtual BlockObject Data { get; }
 		public Vector2 Position => _position;
 		public string State => _state;
 
+		public BlockGameObject BlockGO {
+			get {
+				if(_bgo == null)
+					_bgo = GetComponent<BlockGameObject>();
+
+				return _bgo;
+			}
+		}
+		
+		[SerializeField] private BlockGameObject _bgo;
 		[SerializeField] private Vector2 _position;
 		[SerializeField] private string _state;
 		
@@ -30,11 +40,11 @@ namespace ProjectFortrest.Game.Blocks.Impl {
 		}
 
 		public void SetState(string state) {
-			if(!Tile.hasStates) return;
-			
+			if(!Data.HasStates() || _state == state) return;
 			// Cache information about the block object to make state lookup faster.
 			// Check if states is a valid state of this tile.
 			_state = state;
+			BlockGO.UpdateState(state);
 		}
 
 		public virtual void Deserialize(BinaryReader reader) {}

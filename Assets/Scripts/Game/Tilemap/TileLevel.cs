@@ -84,6 +84,9 @@ namespace ProjectFortrest.Game.Level {
 	[ExecuteInEditMode]
 	#endif
 	public class TileLevel : MonoBehaviour, IDataHolder {
+		private static readonly Vector3 PREFAB_OFFSET = new Vector3(0.5f, 0.5f);
+		private static readonly Vector3 PREFAB_SCALE = new Vector3(1, 1, -1);
+
 		public static int FLOOR => (int)IBlockGroup.Floor;
 		public static int WALLS => (int)IBlockGroup.Wall;
 		public static int INTER => (int)IBlockGroup.Interactable;
@@ -92,23 +95,53 @@ namespace ProjectFortrest.Game.Level {
 		public TilemapRenderer tilemap_render;
 		public TilemapCollider2D tilemap_collider;
 		public Transform tilemap_objects;
-		public BlockMap blockMap;
-
 		public int index;
+
+		public BlockMap blockMap;
 
 		internal void SetLevel(int index) {
 			this.index = index;
 			tilemap_render.sortingOrder = index;
 		}
 
-		public void SetBlock(int x, int y, BlockObject block) {
-			SetTile(x, y, (int)block.blockGroup, block);
+		public void RemoveBlock(int x, int y, int z) {
+			Vector3Int pos = new Vector3Int(x, y, z);
+			blockMap.Remove(pos);
+			tilemap.SetTile(pos, null);
 		}
 
-		public void RemoveBlock(int x, int y, int layer) {
-			SetTile(x, y, layer, null);
+		public void PutBlock(int x, int y, BlockObject block) {
+			if(block == null) return;
+			PutBlock(new Vector3Int(x, y, (int)block.blockGroup), block, block.states[0]);
 		}
 
+		public void PutBlock(int x, int y, BlockObject block, string state) {
+			if(block == null) return;
+			PutBlock(new Vector3Int(x, y, (int)block.blockGroup), block, block.GetState(state));
+		}
+
+		public void PutBlock(int x, int y, BlockObject block, int stateIndex) {
+			if(block == null) return;
+			PutBlock(new Vector3Int(x, y, (int)block.blockGroup), block, block.GetState(stateIndex));
+		}
+
+		public void PutBlock(Vector3Int pos, BlockObject block, BlockState state) {
+			blockMap.Set(pos, block, () => {
+				GameObject obj = GameObject.Instantiate(block.prefab, Vector3.Scale(pos + PREFAB_OFFSET, PREFAB_SCALE), Quaternion.identity, tilemap_objects);
+				BlockGameObject bgo = obj.GetComponent<BlockGameObject>();
+				bgo.Initialize(this, pos, state.name);
+				return bgo;
+			});
+
+			SetOnlyTile(pos, block, state);
+		}
+		
+		public void UpdateState(Vector3Int position, BlockObject block, string state) {
+			if(blockMap.Get(position, out var entry)) {
+				entry.state = state;
+				SetOnlyTile(position, block, block.GetState(state));
+			}
+		}
 
 		public BlockObject GetFloor(int x, int y) {
 			return GetTile(x, y, FLOOR);
@@ -122,24 +155,12 @@ namespace ProjectFortrest.Game.Level {
 			return GetTile(x, y, INTER);
 		}
 
-		private void SetTile(int x, int y, int level, BlockObject block) {
-			Vector3Int pos = new Vector3Int(x, y, level);
-
-			blockMap.Set(pos, block, () => {
-				GameObject obj = GameObject.Instantiate(block.prefab, pos, Quaternion.identity, tilemap_objects);
-				BlockGameObject bgo = obj.GetComponent<BlockGameObject>();
-				bgo.Initialize(this, pos, block.defaultState);
-				return bgo;
-			});
-
-			SetOnlyTile(pos, block);
-		}
-
-		private void SetOnlyTile(Vector3Int position, BlockObject block) {
+		private void SetOnlyTile(Vector3Int position, BlockObject block, BlockState state) {
 			if(block == null) {
 				tilemap.SetTile(position, null);
 			} else {
-				tilemap.SetTile(position, block.tile);
+				tilemap.SetTile(position, state.tile);
+
 				if(position.z == FLOOR) {
 					tilemap.SetColliderType(position, Tile.ColliderType.None);
 				}
@@ -171,9 +192,10 @@ namespace ProjectFortrest.Game.Level {
 					if(entry.go != null) {
 						entry.go.Initialize(this, position, entry.state);
 						entry.go.transform.parent = tilemap_objects;
+						entry.go.transform.position = Vector3.Scale(position + PREFAB_OFFSET, PREFAB_SCALE);
 					}
 					
-					SetOnlyTile(position, entry.block);
+					SetOnlyTile(position, entry.block, entry.block.GetState(entry.state));
 				}
 			}
 		}
@@ -182,7 +204,6 @@ namespace ProjectFortrest.Game.Level {
 			// We dont really need to do anything really here
 			blockMap.Serialize(writer);
 		}
-
 
 		#if UNITY_EDITOR
 		[ToggleButtonAttribute("Deserialize Level")]
@@ -226,10 +247,8 @@ namespace ProjectFortrest.Game.Level {
 					}
 				}
 			}
-
 		}
-
-		#endif
+#endif
 	}
 
 	[Serializable]
@@ -240,12 +259,11 @@ namespace ProjectFortrest.Game.Level {
 
 		public string GetSerializedName() {
 			string result = block.blockName;
-
-			if(block.hasStates) {
-				if(block.prefab != null) {
-					result += $":{go.State}";
-				} else {
-					result += $":{state}";
+			
+			if(block.HasStates()) {
+				string _state = (block.prefab != null) ? go.State:state;
+				if(_state.Length > 0) {
+					result += $":{_state}";
 				}
 			}
 
@@ -329,7 +347,7 @@ namespace ProjectFortrest.Game.Level {
 
 			BlockMapEntry entry = new BlockMapEntry() {
 				block = block,
-				state = block.defaultState
+				state = block.states[0].name
 			};
 
 			if(block.prefab != null) {

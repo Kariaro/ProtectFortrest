@@ -26,6 +26,9 @@ public class BlockMapPropertyDrawer : PropertyDrawer {
 		CheckInitalize(property, label);
 
 		_Foldout = EditorGUI.Foldout(new Rect(position) { height = 16 }, _Foldout, label.text);
+		
+		Rect label_rect = new Rect(position) { x = position.x + 70, height = 16, width = 70 };
+		EditorGUI.LabelField(label_rect, $"{blockMap.Count} items", EditorStyles.helpBox);
 		position.y += 17;
 
 		if(_Foldout) {
@@ -41,7 +44,7 @@ public class BlockMapPropertyDrawer : PropertyDrawer {
 				if(ent == null || ent.block == null) continue;
 
 				Rect ent_rect = new Rect(position) { x = position.x, y = position.y + i * 17, width = 120, height = 15 };
-				if(ent.block?.hasStates ?? false) {
+				if(ent.block.HasStates()) {
 					EditorGUI.TextField(ent_rect, GUIContent.none, ent.block.blockName + ":" + ent.state);
 				} else {
 					EditorGUI.TextField(ent_rect, GUIContent.none, ent.block.blockName);

@@ -28,6 +28,8 @@ public class PreviewUtility {
 			return tile_tile.sprite;
 		} else if(tile is RuleTile ruleTile_tile) {
 			return ruleTile_tile.m_DefaultSprite;
+		} else if(tile is AnimatedTile animatedTile_tile) {
+			return animatedTile_tile.m_AnimatedSprites.Length > 0 ? animatedTile_tile.m_AnimatedSprites[0]:null;
 		} else {
 			Debug.Log("Unknown tile type: " + tile.GetType());
 		}

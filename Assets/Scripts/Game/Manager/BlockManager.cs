@@ -18,27 +18,16 @@ namespace ProjectFortrest.Game.Manager {
 		public BlockObject BRICK_WALL;
 		public BlockObject WOOD_WALL;
 		public BlockObject CHEST;
-		public UnityEngine.Object testObject;
 		
 		private Dictionary<string, BlockObject> BlockMap;
-		private Dictionary<TileBase, BlockObject> TileToBlock;
-
+		
 		private void ReloadDatabase() {
 			BlockMap = new Dictionary<string, BlockObject>();
-			TileToBlock = new Dictionary<TileBase, BlockObject>();
-
-			foreach(BlockObject block in database.elements) {
-				BlockMap.Add(block.blockName, block);
-				TileToBlock.Add(block.tile, block);
-			}
-		}
-
-		public BlockObject GetFromTile(TileBase tileBase) {
-			if(tileBase == null) return null;
 			
-			if(TileToBlock == null) ReloadDatabase();
-			TileToBlock.TryGetValue(tileBase, out var result);
-			return result;
+			foreach(BlockObject block in database.elements) {
+				if(block == null) continue;
+				BlockMap.Add(block.blockName, block);
+			}
 		}
 
 		public BlockObject GetFromName(string name) {

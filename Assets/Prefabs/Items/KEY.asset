@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a69db7aeb096bbc46a926c699b49e1ac, type: 3}
   m_Name: KEY
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: f9e1c6e048dffaa4a8e7cfff5d1610d4, type: 3}
   itemName: KEY
-  defaultState: State
   itemGroup: 0
   prefab: {fileID: 0}
   interactable: 0
   hasStates: 0
-  states: []
+  states:
+  - sprite: {fileID: 21300000, guid: f9e1c6e048dffaa4a8e7cfff5d1610d4, type: 3}
+    name: DEFAULT

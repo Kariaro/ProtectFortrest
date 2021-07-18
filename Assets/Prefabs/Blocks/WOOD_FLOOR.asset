@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd94193cac54f0e47a19eea7c5d1353b, type: 3}
   m_Name: WOOD_FLOOR
   m_EditorClassIdentifier: 
-  tile: {fileID: 11400000, guid: 1c7869aa9ca6da246a6d0d5a610a357d, type: 2}
   blockName: WOOD_FLOOR
-  defaultState: State
   blockGroup: 0
+  prefab: {fileID: 0}
   interactable: 0
   hasStates: 0
-  states: []
+  states:
+  - tile: {fileID: 11400000, guid: 1c7869aa9ca6da246a6d0d5a610a357d, type: 2}
+    name: 

@@ -1,12 +1,5 @@
 ﻿using ProjectFortrest.Game.Level;
 using ProjectFortrest.Storage;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 
 namespace ProjectFortrest.Game.Items {
 	public interface IItem : IDataHolder {

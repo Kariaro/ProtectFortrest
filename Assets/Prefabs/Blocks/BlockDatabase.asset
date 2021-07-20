@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp:ProjectFortrest.Game.Database:BlockDatabase
   elements:
   - {fileID: 11400000, guid: 10fc9d3b6577d3a45a4591912a27ae86, type: 2}
+  - {fileID: 11400000, guid: 81e90861d7b6c6249aad36f1ff947220, type: 2}
+  - {fileID: 11400000, guid: 42b177a6d0846ba4d8e3aa7071d6b403, type: 2}
   - {fileID: 11400000, guid: 1436d4d611f047a4b8c1a2b4f29331ed, type: 2}
   - {fileID: 11400000, guid: 366bd8a8bed37a5439869ff41f239597, type: 2}
+  - {fileID: 11400000, guid: e621e7c56fba9c844b107bb3d26f6700, type: 2}
   - {fileID: 11400000, guid: 37e66b2caf420c144acfec090315c9ad, type: 2}
   - {fileID: 11400000, guid: 896fbc9e1374c034098bdb78176b73cd, type: 2}
+  - {fileID: 11400000, guid: 6a64c5f5ce6f84c42bfce16d88b0f45f, type: 2}
   - {fileID: 11400000, guid: ddc45eb04e2831b4bad8e7ad71fea78d, type: 2}

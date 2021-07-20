@@ -60,10 +60,10 @@ public class ItemDatabaseEditor : Editor {
 			},
 		};
 	}
-
-	private ReorderableList item_list;
+	
 	private Vector2 scrollPosition = Vector2.zero;
 	private List<ItemObject> database_list;
+	private ReorderableList item_list;
 
 	public override void OnInspectorGUI() {
 		if(item_list == null) {
@@ -88,6 +88,16 @@ public class ItemDatabaseEditor : Editor {
 				if(LoadedAsset is ItemObject) {
 					database_list.Add(LoadedAsset as ItemObject);
 				}
+			}
+
+			SerializedProperty elements_prop = serializedObject.FindProperty("elements");
+			if(elements_prop.arraySize != database_list.Count) {
+				elements_prop.arraySize = database_list.Count;
+			}
+
+			for(int i = 0; i < database_list.Count; i++) {
+				SerializedProperty a = elements_prop.GetArrayElementAtIndex(i);
+				a.objectReferenceValue = database_list[i];
 			}
 		}
 

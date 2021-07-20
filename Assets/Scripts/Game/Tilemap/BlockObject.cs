@@ -9,7 +9,7 @@ using UnityEngine.Tilemaps;
 
 
 namespace ProjectFortrest.Game.Level {
-	[CreateAssetMenu(fileName = "Block", menuName = "Blocks/Block", order = 1)]
+	[CreateAssetMenu(fileName = "Block", menuName = "Database/Block", order = 1)]
 	public class BlockObject : ScriptableObject {
 		public string blockName;
 		public IBlockGroup blockGroup;

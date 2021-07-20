@@ -1,5 +1,6 @@
 ﻿using ProjectFortrest.Game.Blocks;
 using ProjectFortrest.Game.Blocks.Impl;
+using ProjectFortrest.Game.Level;
 using ProjectFortrest.Game.Manager;
 using ProjectFortrest.Storage;
 using System;
@@ -143,36 +144,13 @@ namespace ProjectFortrest.Game.Level {
 			}
 		}
 
-		public BlockObject GetFloor(int x, int y) {
-			return GetTile(x, y, FLOOR);
-		}
-
-		public BlockObject GetWall(int x, int y) {
-			return GetTile(x, y, WALLS);
-		}
-
-		public BlockObject GetInteractable(int x, int y) {
-			return GetTile(x, y, INTER);
-		}
-
 		private void SetOnlyTile(Vector3Int position, BlockObject block, BlockState state) {
-			if(block == null) {
-				tilemap.SetTile(position, null);
-			} else {
-				tilemap.SetTile(position, state.tile);
-
+			tilemap.SetTile(position, state?.tile);
+			if(block != null) {
 				if(position.z == FLOOR) {
 					tilemap.SetColliderType(position, Tile.ColliderType.None);
 				}
 			}
-		}
-
-		private BlockObject GetTile(int x, int y, int level) {
-			if(blockMap.Get(new Vector3Int(x, y, level), out BlockMapEntry entry)) {
-				return entry.block;
-			}
-
-			return null;
 		}
 
 		public void SetCollision(bool enable) {
@@ -212,8 +190,6 @@ namespace ProjectFortrest.Game.Level {
 		public bool toggle_Serialize;
 
 		void OnRenderObject() {
-			// This is called inside the editor
-			
 			if(toggle_Serialize) {
 				toggle_Serialize = false;
 				
@@ -291,7 +267,7 @@ namespace ProjectFortrest.Game.Level {
 				go.Serialize(writer);
 		}
 	}
-	
+
 	[Serializable]
 	public class BlockMap : IDataHolder, ISerializationCallbackReceiver {
 		private readonly Dictionary<Vector3Int, BlockMapEntry> _Blocks = new Dictionary<Vector3Int, BlockMapEntry>();
@@ -382,45 +358,84 @@ namespace ProjectFortrest.Game.Level {
 			}
 		}
 	}
+}
 
-	/*
+/*
+namespace ProjectFortrest.Game.Level.Storage {
 	[Serializable]
-	public class BlockMap : ISerializationCallbackReceiver {
-		private readonly Dictionary<Vector3Int, BlockGameObject> _Dictionary = new Dictionary<Vector3Int, BlockGameObject>();
-		[SerializeField] List<Vector3Int> _Keys;
-		[SerializeField] List<BlockGameObject> _Values;
+	public class BlockChunk {
+		public BlockSlice[] slice = new BlockSlice[16];
 
-		public int Count => _Dictionary.Count;
-		public IEnumerable<Vector3Int> Keys => _Dictionary.Keys;
-		public IEnumerable<BlockGameObject> Values => _Dictionary.Values;
-
-		public void OnBeforeSerialize() {
-			_Keys = _Dictionary.Keys.ToList();
-			_Values = _Dictionary.Values.ToList();
-		}
-
-		public void OnAfterDeserialize() {
-			for(int i = 0, len = _Keys.Count; i < len; i++) {
-				_Dictionary.Add(_Keys[i], _Values[i]);
-			}
-			_Keys.Clear();
-			_Values.Clear();
-		}
-
-		public BlockGameObject Get(Vector3Int position) {
-			_Dictionary.TryGetValue(position, out BlockGameObject result);
-			return result;
-		}
-
-		public void Set(Vector3Int position, BlockGameObject bgo) {
-			_Dictionary.TryGetValue(position, out BlockGameObject value);
-			if(value != null) value.Remove();
-			_Dictionary.Remove(position);
-			
-			if(bgo != null) {
-				_Dictionary.Add(position, bgo);
-			}
+		public void PutBlock(int x, int y, int z) {
+			GetSlice(z).PutBlock()
 		}
 	}
-	*/
+
+	[Serializable]
+	public class BlockEntry {
+		public BlockObject block;
+		public string state;
+		public BlockGameObject go;
+
+		public string GetSerializedName() {
+			string result = block.blockName;
+			
+			if(block.HasStates()) {
+				string _state = (block.prefab != null) ? go.State:state;
+				if(_state.Length > 0) {
+					result += $":{_state}";
+				}
+			}
+
+			return result;
+		}
+	}
+
+	[Serializable]
+	public class BlockSlice : IDataHolder {
+		public static readonly int SLICE_SIDE = 16;
+		public static readonly int SLICE_SIZE = SLICE_SIDE * SLICE_SIDE;
+		public BlockEntry[] data = new BlockEntry[SLICE_SIZE];
+
+		public void Deserialize(BinaryReader reader) {
+			for(int i = 0; i < SLICE_SIZE; i++) {
+				string _serializedName = reader.ReadString();
+				if(_serializedName.Length > 0) {
+					data[i] = DeserializeEntry(reader, _serializedName);
+				}
+			}
+		}
+
+		public void Serialize(BinaryWriter writer) {
+			for(int i = 0; i < SLICE_SIZE; i++) {
+				var entry = data[i];
+				if(entry == null) {
+					writer.Write((int)0);
+				} else {
+					writer.Write(entry.GetSerializedName());
+
+					if(entry.block.prefab != null) {
+						entry.go.Serialize(writer);
+					}
+				}
+			}
+		}
+
+		public BlockEntry DeserializeEntry(BinaryReader reader, string _serializedName) {
+			string _blockName = BlockManager.GetNamespaceName(_serializedName);
+			string _state = BlockManager.GetNamespaceKey(_serializedName);
+			BlockEntry entry = new BlockEntry() {
+				block = BlockManager.GetBlock(_blockName),
+				state = _state
+			};
+
+			if(entry.block.prefab != null) {
+				entry.go = GameObject.Instantiate(entry.block.prefab).GetComponent<BlockGameObject>();
+				entry.go.Deserialize(reader);
+			}
+
+			return entry;
+		}
+	}
 }
+*/

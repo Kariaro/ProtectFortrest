@@ -42,6 +42,7 @@ namespace ProjectFortrest.Game.Blocks.Impl {
 			} else {
 				SetState("LEFT");
 			}
+			SoundManager.PlaySound("CLICK");
 		}
 	}
 }

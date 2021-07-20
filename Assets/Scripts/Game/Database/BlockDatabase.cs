@@ -1,12 +1,6 @@
-﻿using ProjectFortrest.Game.Blocks;
-using ProjectFortrest.Game.Level;
-using System;
+﻿using ProjectFortrest.Game.Level;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 
 namespace ProjectFortrest.Game.Database {
@@ -17,9 +11,9 @@ namespace ProjectFortrest.Game.Database {
 
 	public static class BlockDatabaseExtension {
 		public static BlockObject GetFromName(this BlockDatabase database, string name) {
-			foreach(BlockObject block in database.elements) {
-				if(block.name.Equals(name))
-					return block;
+			foreach(BlockObject element in database.elements) {
+				if(element.name.Equals(name))
+					return element;
 			}
 
 			return null;

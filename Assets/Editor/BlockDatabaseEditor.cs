@@ -1,13 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using System.Linq;
 using UnityEditorInternal;
-using System;
-using UnityEngine.Tilemaps;
 using ProjectFortrest.Game.Database;
 using ProjectFortrest.Game.Level;
 using ProjectFortrest.Game.Blocks;
@@ -16,9 +10,10 @@ using ProjectFortrest.Game.Blocks;
 public class BlockDatabaseEditor : Editor {
 
 	protected virtual void OnEnable() {
+		
 	}
 
-	private ReorderableList BuildTaskReorderableList(List<BlockObject> database, string name) {
+	private ReorderableList BuildReorderableList(List<BlockObject> database, string name) {
 		return new ReorderableList(database, typeof(BlockObject), true, true, false, false) {
 			drawHeaderCallback = (Rect rect) => {
 				EditorGUI.LabelField(rect, name);
@@ -70,15 +65,15 @@ public class BlockDatabaseEditor : Editor {
 			},
 		};
 	}
-
-	private ReorderableList block_list;
+	
 	private Vector2 scrollPosition = Vector2.zero;
 	private List<BlockObject> database_list;
+	private ReorderableList block_list;
 
 	public override void OnInspectorGUI() {
 		if(block_list == null) {
 			database_list = ((BlockDatabase)target).elements;
-			block_list = BuildTaskReorderableList(database_list, "Database");
+			block_list = BuildReorderableList(database_list, "Database");
 		}
 
 		serializedObject.Update();
@@ -99,11 +94,20 @@ public class BlockDatabaseEditor : Editor {
 					database_list.Add(LoadedAsset as BlockObject);
 				}
 			}
+
+			SerializedProperty elements_prop = serializedObject.FindProperty("elements");
+			if(elements_prop.arraySize != database_list.Count) {
+				elements_prop.arraySize = database_list.Count;
+			}
+
+			for(int i = 0; i < database_list.Count; i++) {
+				SerializedProperty a = elements_prop.GetArrayElementAtIndex(i);
+				a.objectReferenceValue = database_list[i];
+			}
 		}
 
 		block_list.DoLayoutList();
 		GUILayout.EndScrollView();
-
 		GUILayout.EndHorizontal();
 
 		serializedObject.ApplyModifiedProperties();

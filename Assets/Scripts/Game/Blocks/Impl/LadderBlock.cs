@@ -42,6 +42,7 @@ namespace ProjectFortrest.Game.Blocks.Impl {
 				ClientPlayerEntity cpe = c.GetComponent<ClientPlayerEntity>();
 				if(cpe != null) {
 					Debug.Log("Use ladder");
+					SoundManager.PlaySound("CLICK");
 				}
 			}
 		}

@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour {
 	public LevelManager LevelManager { get; }
 	public EventManager EventManager { get; }
 	public BlockManager BlockManager;
+	public SoundManager SoundManager;
 
 	public GameObject TileLevelPrefab;
 
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour {
 		KeyBindings.OnStart();
 		LevelManager.OnStart();
 		BlockManager.OnStart();
+		SoundManager.OnStart();
 	}
 
 	void Start() {

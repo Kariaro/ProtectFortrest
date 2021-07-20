@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6160829495278679694}
   - component: {fileID: 6160829495278679695}
   - component: {fileID: 4661318171574941564}
+  - component: {fileID: 4142631360534064110}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: GameManager
@@ -45,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BlockManager: {fileID: 4661318171574941564}
+  SoundManager: {fileID: 4142631360534064110}
   TileLevelPrefab: {fileID: 3208423351595997712, guid: 675ee1ec5c77cbd478a7e50c5cdcb7f1, type: 3}
 --- !u!114 &4661318171574941564
 MonoBehaviour:
@@ -62,4 +64,18 @@ MonoBehaviour:
   GRASS: {fileID: 0}
   PIPE: {fileID: 0}
   BRICK_WALL: {fileID: 0}
+  WOOD_WALL: {fileID: 0}
   CHEST: {fileID: 0}
+--- !u!114 &4142631360534064110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160829495278679664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d7acc694f6e8d14b8722e6ef03ee97c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  database: {fileID: 11400000, guid: 79bafb57977ba434ab5e52e37ab97646, type: 2}

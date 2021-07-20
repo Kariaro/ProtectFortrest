@@ -73,6 +73,9 @@ namespace ProjectFortrest.Game.Entity.Impl {
 				float speed = shift ? 3f:1.5f;
 				Velocity += new Vector2(xx, yy) * speed / denom;
 			}
+
+			LastPx = Mathf.FloorToInt(Position.x);
+			LastPy = Mathf.FloorToInt(Position.y - 0.25f);
 		}
 
 		void Update() {
@@ -82,19 +85,45 @@ namespace ProjectFortrest.Game.Entity.Impl {
 			if(Input.GetKeyDown(KeyCode.J)) {
 				SetLayer(Layer - 1);
 			}
+
+			/*
+			Camera current = Camera.main;
+			Vector3 camPos = current.transform.position;
+			Vector2 newPos = ((Vector2)camPos + Position) / 2.0f;
+
+			current.transform.position = new Vector3(newPos.x, newPos.y, camPos.z);
+			{
+				float ppx = Mathf.FloorToInt(newPos.x * 16) / 16.0f;
+				float ppy = Mathf.FloorToInt(newPos.y * 16) / 16.0f;
+				current.transform.position = new Vector3(ppx, ppy, camPos.z);
+			}
+			*/
+
+			Camera current = Camera.main;
+			Vector3 camPos = current.transform.position;
+
+			current.transform.position = new Vector3(camPos.x, camPos.y, camPos.z);
+			/*{
+				float off = 0.001f;
+				float ppx = (Mathf.FloorToInt(camPos.x * 16) + 0.5f) / 16.0f + off;
+				float ppy = (Mathf.FloorToInt(camPos.y * 16) + 0.5f) / 16.0f + off;
+				current.transform.position = new Vector3(ppx, ppy, camPos.z);
+			}*/
 		}
 
+		private int LastPx, LastPy;
 		public override void AfterTick() {
 			Camera current = Camera.main;
 			Vector3 camPos = current.transform.position;
 			Vector2 newPos = ((Vector2)camPos + Position) / 2.0f;
 
 			current.transform.position = new Vector3(newPos.x, newPos.y, camPos.z);
-			/*{
-				float ppx = Mathf.FloorToInt(newPos.x * 16) / 16.0f + 0.0001f;
-				float ppy = Mathf.FloorToInt(newPos.y * 16) / 16.0f + 0.0001f;
+			/* {
+				float ppx = Mathf.FloorToInt(newPos.x * 16) / 16.0f;
+				float ppy = Mathf.FloorToInt(newPos.y * 16) / 16.0f;
 				current.transform.position = new Vector3(ppx, ppy, camPos.z);
-			}*/
+			}
+			*/
 
 			int px = Mathf.FloorToInt(Position.x);
 			int py = Mathf.FloorToInt(Position.y - 0.25f);
@@ -148,6 +177,10 @@ namespace ProjectFortrest.Game.Entity.Impl {
 						MouseBoxRenderer.color = color;
 					}
 				}
+			}
+
+			if(LastPx != px || LastPy != py) {
+				SoundManager.PlaySound("WALK");
 			}
 		}
 
